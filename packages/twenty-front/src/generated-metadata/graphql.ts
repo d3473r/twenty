@@ -2268,7 +2268,7 @@ export type Mutation = {
   startChannelSync: ChannelSyncSuccess;
   switchBillingPlan: BillingUpdateOutput;
   switchSubscriptionInterval: BillingUpdateOutput;
-  syncApplication: Scalars['Boolean'];
+  syncApplication: WorkspaceMigrationDto;
   trackAnalytics: Analytics;
   uninstallApplication: Scalars['Boolean'];
   updateApiKey?: Maybe<ApiKey>;
@@ -5172,6 +5172,12 @@ export enum WorkspaceMigrationActionType {
   delete = 'delete',
   update = 'update'
 }
+
+export type WorkspaceMigrationDto = {
+  __typename?: 'WorkspaceMigrationDTO';
+  actions: Scalars['JSON'];
+  applicationUniversalIdentifier: Scalars['String'];
+};
 
 export type WorkspaceMigrationDeleteActionInput = {
   metadataName: AllMetadataName;
