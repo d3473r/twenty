@@ -47,7 +47,7 @@ type CommonPropertiesJwtPayload = {
   sub: string;
 };
 
-export type FileTokenJwtPayload = CommonPropertiesJwtPayload & {
+export type FileTokenJwtPayloadLegacy = CommonPropertiesJwtPayload & {
   type: JwtTokenTypeEnum.FILE;
   workspaceId: string;
   filename: string;
@@ -57,7 +57,7 @@ export type FileTokenJwtPayload = CommonPropertiesJwtPayload & {
   personId?: string;
 };
 
-export type FilesFieldTokenJwtPayload = CommonPropertiesJwtPayload & {
+export type FileTokenJwtPayload = CommonPropertiesJwtPayload & {
   type: JwtTokenTypeEnum.FILE;
   workspaceId: string;
   fileId: string;
@@ -133,5 +133,5 @@ export type JwtPayload =
   | TransientTokenJwtPayload
   | RefreshTokenJwtPayload
   | FileTokenJwtPayload
-  | FilesFieldTokenJwtPayload
+  | FileTokenJwtPayloadLegacy
   | PostgresProxyTokenJwtPayload;
