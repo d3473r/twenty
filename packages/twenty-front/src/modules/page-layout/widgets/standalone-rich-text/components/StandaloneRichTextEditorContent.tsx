@@ -1,15 +1,14 @@
 import { useCallback, useMemo } from 'react';
 
-import { BLOCK_SCHEMA } from '@/activities/blocks/constants/Schema';
-import { useUploadAttachmentFile } from '@/activities/files/hooks/useUploadAttachmentFile';
 import { type Attachment } from '@/activities/files/types/Attachment';
-import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
 import { useUpdatePageLayoutWidget } from '@/page-layout/hooks/useUpdatePageLayoutWidget';
 import { isPageLayoutInEditModeComponentState } from '@/page-layout/states/isPageLayoutInEditModeComponentState';
 import { pageLayoutEditingWidgetIdComponentState } from '@/page-layout/states/pageLayoutEditingWidgetIdComponentState';
 import { type PageLayoutWidget } from '@/page-layout/types/PageLayoutWidget';
 import { DashboardsBlockEditor } from '@/page-layout/widgets/standalone-rich-text/components/DashboardsBlockEditor';
 import { StandaloneRichTextWidgetAutoFocusEffect } from '@/page-layout/widgets/standalone-rich-text/components/StandaloneRichTextWidgetAutoFocusEffect';
+import { DASHBOARD_BLOCK_SCHEMA } from '@/page-layout/widgets/standalone-rich-text/constants/DashboardBlockSchema';
+import { filterSupportedBlocks } from '@/page-layout/widgets/standalone-rich-text/utils/filterSupportedBlocks';
 import { BLOCK_EDITOR_GLOBAL_HOTKEYS_CONFIG } from '@/ui/input/editor/constants/BlockEditorGlobalHotkeysConfig';
 import { useAttachmentSync } from '@/ui/input/editor/hooks/useAttachmentSync';
 import { parseInitialBlocknote } from '@/ui/input/editor/utils/parseInitialBlocknote';
@@ -28,7 +27,6 @@ import { WidgetConfigurationType } from '~/generated-metadata/graphql';
 
 type StandaloneRichTextEditorContentProps = {
   widget: PageLayoutWidget;
-  dashboardId: string;
   currentBody: string;
   attachments: Attachment[];
   isEditable: boolean;
@@ -37,14 +35,12 @@ type StandaloneRichTextEditorContentProps = {
 
 export const StandaloneRichTextEditorContent = ({
   widget,
-  dashboardId,
   currentBody,
   attachments,
   isEditable,
   containerElement,
 }: StandaloneRichTextEditorContentProps) => {
   const { updatePageLayoutWidget } = useUpdatePageLayoutWidget();
-  const { uploadAttachmentFile } = useUploadAttachmentFile();
   const { pushFocusItemToFocusStack } = usePushFocusItemToFocusStack();
   const { removeFocusItemFromFocusStackById } =
     useRemoveFocusItemFromFocusStackById();
@@ -72,28 +68,15 @@ export const StandaloneRichTextEditorContent = ({
     [isPageLayoutInEditModeState, pageLayoutEditingWidgetIdState, widget.id],
   );
 
-  const handleUploadAttachment = async (file: File) => {
-    return await uploadAttachmentFile(file, {
-      id: dashboardId,
-      targetObjectNameSingular: CoreObjectNameSingular.Dashboard,
-    });
-  };
-
-  const handleEditorBuiltInUploadFile = async (file: File) => {
-    const { attachmentAbsoluteURL } = await handleUploadAttachment(file);
-    return attachmentAbsoluteURL;
-  };
-
   const initialContent = useMemo(
-    () => parseInitialBlocknote(currentBody),
+    () => filterSupportedBlocks(parseInitialBlocknote(currentBody)),
     [currentBody],
   );
 
   const editor = useCreateBlockNote({
     initialContent,
     domAttributes: { editor: { class: 'editor' } },
-    schema: BLOCK_SCHEMA,
-    uploadFile: handleEditorBuiltInUploadFile,
+    schema: DASHBOARD_BLOCK_SCHEMA,
     sideMenuDetection: 'editor',
   });
 
