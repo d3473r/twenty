@@ -67,6 +67,7 @@ export { workflowRunStepStatusSchema } from './schemas/workflow-run-step-status-
 export { workflowTriggerSchema } from './schemas/workflow-trigger-schema';
 export type { EmailRecipients } from './types/EmailRecipients';
 export type { StepIfElseBranch } from './types/StepIfElseBranch';
+export type { WorkflowAttachment } from './types/WorkflowAttachment';
 export type { BodyType } from './types/workflowHttpRequestStep';
 export type {
   WorkflowRunStepInfo,
